@@ -1,0 +1,10 @@
+node_modules
+Dockerfile
+.prettierrc
+.git
+.gitignore
+LICENSE
+VERSION
+README.md
+Changelog.md
+docker-compose.yml

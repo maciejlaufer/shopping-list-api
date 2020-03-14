@@ -1,0 +1,34 @@
+version: '3.7'
+
+services:
+  nest:
+    container_name: nest
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - 9229:9229
+    command: npm run start:dev
+    env_file:
+      - .env
+    networks:
+      - webnet
+    depends_on:
+      - db
+  db:
+    container_name: mongo
+    image: mongo
+    networks:
+      - webnet
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodata:/data/db
+networks:
+  webnet:
+volumes:
+  mongodata:
