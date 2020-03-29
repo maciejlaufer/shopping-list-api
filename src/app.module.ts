@@ -5,12 +5,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+// import { GraphQLModule } from '@nestjs/graphql';
+// import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     AuthModule,
     UsersModule,
+    // GraphQLModule.forRoot({
+    //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    //   debug: process.env.NODE_ENV === 'development',
+    //   playground: process.env.NODE_ENV === 'development',
+    // }),
     MongooseModule.forRoot(`${process.env.MONGO_URI}/${process.env.DB_NAME}`, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

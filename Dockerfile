@@ -8,8 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN ls ./node_modules
-
 RUN npm run build
 
 FROM node:12.13-alpine as production
