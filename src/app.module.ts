@@ -8,10 +8,12 @@ import { UsersModule } from './users/users.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { RecipesModule } from './recipes/recipes.module';
 import { join } from 'path';
+import { AppConfigModule } from './core/config/app-config.module';
+import { SeedsModule } from './core/seeds/seeds.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    AppConfigModule,
     AuthModule,
     UsersModule,
     RecipesModule,
@@ -24,6 +26,7 @@ import { join } from 'path';
       useNewUrlParser: true,
       useUnifiedTopology: true,
     }),
+    SeedsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

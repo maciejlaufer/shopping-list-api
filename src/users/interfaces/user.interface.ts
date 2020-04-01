@@ -1,7 +1,9 @@
-export interface User {
+export class User {
   firstName: string;
   lastName: string;
   email: string;
-  passwordHash: string;
+  password: string;
+  salt: string;
+  resetPasswordToken: string;
   roles: Array<string>;
 }
