@@ -17,6 +17,5 @@ export class UserSeedService {
       };
       await this.userServie.createUser(user, ['ADMIN']);
     }
-    console.log('users', users);
   }
 }

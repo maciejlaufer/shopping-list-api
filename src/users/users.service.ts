@@ -1,11 +1,11 @@
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './interfaces/user.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { MD5, SHA3 } from 'crypto-js';
 import { UserRoles } from './user-roles';
-import { UsersModule } from './users.module';
+import { ObjectID } from 'mongodb';
+import { User } from './model/user.model';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +17,7 @@ export class UsersService {
   ): Promise<User> {
     const user = {
       email: createUserRequest.email,
+      username: createUserRequest.email,
       firstName: createUserRequest.firstName,
       lastName: createUserRequest.lastName,
       roles: roles,
@@ -27,8 +28,20 @@ export class UsersService {
     return createdUser.save();
   }
 
+  async findOneByUsername(username: string): Promise<User> {
+    return this.userModel.findOne({ username });
+  }
+
+  async findOneById(id: ObjectID): Promise<User> {
+    return this.userModel.findOneById(id);
+  }
+
   async findAll(): Promise<Array<User>> {
     return this.userModel.find().exec();
+  }
+
+  public validatePassword(user: User, password: string): boolean {
+    return user && this.hashPassword(user, password) === user.password;
   }
 
   private generateResetPasswordToken(user: User): string {
@@ -55,10 +68,6 @@ export class UsersService {
   private setPassword(user: User, password: string): void {
     user.salt = this.generateSaltForUser(user);
     user.password = this.hashPassword(user, password);
-  }
-
-  private validatePassword(user: User, password: string): boolean {
-    return user && this.hashPassword(user, password) === user.password;
   }
 
   private hashPassword(user: User, password: string): string {
