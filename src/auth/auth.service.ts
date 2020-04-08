@@ -1,8 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ValidationPipe } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/users/model/user.model';
 import { LoginResponse } from './_responses/login.response';
+import { RegisterRequest } from './_requests/register.request';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class AuthService {
@@ -24,10 +27,27 @@ export class AuthService {
     return null;
   }
 
-  login(user: any): LoginResponse {
-    const payload = { username: user.username, sub: user.userId };
+  login(user: User): LoginResponse {
+    if (!user.isVerified) {
+      return {
+        isVerified: false,
+        accessToken: null,
+      };
+    }
+    const payload = { username: user.username, sub: user.id };
     return {
+      isVerified: true,
       accessToken: this.jwtService.sign(payload),
     };
+  }
+
+  async register(registerRequest: RegisterRequest): Promise<void> {
+    const newUser = {
+      ...registerRequest,
+    } as CreateUserDto;
+
+    console.log('req', newUser);
+    await this.usersService.createUser(newUser, ['USER']);
+    // TODO: set token for verification
   }
 }

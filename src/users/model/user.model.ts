@@ -10,4 +10,5 @@ export class User {
   salt: string;
   resetPasswordToken: string;
   roles: Array<string>;
+  isVerified: boolean;
 }

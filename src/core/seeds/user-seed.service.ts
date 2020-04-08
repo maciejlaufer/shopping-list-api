@@ -15,7 +15,8 @@ export class UserSeedService {
         email: 'test@test.com',
         password: 'password',
       };
-      await this.userServie.createUser(user, ['ADMIN']);
+      const createdUser = await this.userServie.createUser(user, ['ADMIN']);
+      // TODO: set isVerified flag for user
     }
   }
 }

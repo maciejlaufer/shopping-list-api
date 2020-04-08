@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { MD5, SHA3 } from 'crypto-js';
@@ -15,6 +15,11 @@ export class UsersService {
     createUserRequest: CreateUserDto,
     roles: Array<UserRoles>,
   ): Promise<User> {
+    const existingUser = await this.findOneByEmail(createUserRequest.email);
+    if (existingUser) {
+      throw new BadRequestException('User with that email already exists');
+    }
+
     const user = {
       email: createUserRequest.email,
       username: createUserRequest.email,
@@ -32,8 +37,16 @@ export class UsersService {
     return this.userModel.findOne({ username });
   }
 
+  async findOneByEmail(email: string): Promise<User> {
+    return this.userModel.findOne({ email });
+  }
+
   async findOneById(id: ObjectID): Promise<User> {
     return this.userModel.findOneById(id);
+  }
+
+  async findOne(user: object): Promise<User> {
+    return this.userModel.findOne(user);
   }
 
   async findAll(): Promise<Array<User>> {
