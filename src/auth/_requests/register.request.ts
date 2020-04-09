@@ -1,8 +1,8 @@
 import { IsNotEmpty, MinLength, Validate } from 'class-validator';
-import { UserExistsValidator } from 'src/users/_validators/user-exists.validator';
+import { IsUserExist } from 'src/users/_validators/user-exists.validator';
 
 export class RegisterRequest {
-  @Validate(UserExistsValidator, {
+  @IsUserExist({
     message: 'User with this email already exists',
   })
   @IsNotEmpty()
