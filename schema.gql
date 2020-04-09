@@ -19,6 +19,8 @@ input NewRecipeInput {
 }
 
 type Query {
+  users: [User!]!
+  user(_id: String!): User!
   recipe(id: String!): Recipe!
   recipes(skip: Int = 0, take: Int = 25): [Recipe!]!
 }
@@ -33,4 +35,14 @@ type Recipe {
 
 type Subscription {
   recipeAdded: Recipe!
+}
+
+type User {
+  _id: ID!
+  firstName: String!
+  lastName: String!
+  username: String!
+  email: String!
+  roles: [String!]!
+  isVerified: Boolean!
 }

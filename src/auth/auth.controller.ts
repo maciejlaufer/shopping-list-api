@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './_guards/jwt-auth.guard';
 import { LoginRequest } from './_requests/login.request';
 import { AuthService } from './auth.service';
 import { RegisterRequest } from './_requests/register.request';
+import { ObjectId } from 'mongodb';
 
 @Controller('auth')
 export class AuthController {

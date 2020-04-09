@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { MD5, SHA3 } from 'crypto-js';
 import { UserRoles } from './user-roles';
-import { ObjectID } from 'mongodb';
 import { User } from './model/user.model';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class UsersService {
     createUserRequest: CreateUserDto,
     roles: Array<UserRoles>,
   ): Promise<User> {
-    const existingUser = await this.findOneByEmail(createUserRequest.email);
+    const existingUser = await this.findOne({ email: createUserRequest.email });
     if (existingUser) {
       throw new BadRequestException('User with that email already exists');
     }
@@ -33,24 +32,14 @@ export class UsersService {
     return createdUser.save();
   }
 
-  async findOneByUsername(username: string): Promise<User> {
-    return this.userModel.findOne({ username });
-  }
-
-  async findOneByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email });
-  }
-
-  async findOneById(id: ObjectID): Promise<User> {
-    return this.userModel.findOneById(id);
-  }
-
-  async findOne(user: object): Promise<User> {
-    return this.userModel.findOne(user);
+  async findOne(user: Partial<User>): Promise<User> {
+    const foundUser = await this.userModel.findOne(user);
+    console.log('query', foundUser);
+    return foundUser;
   }
 
   async findAll(): Promise<Array<User>> {
-    return this.userModel.find().exec();
+    return await this.userModel.find();
   }
 
   public validatePassword(user: User, password: string): boolean {

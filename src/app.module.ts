@@ -19,8 +19,8 @@ import { SeedsModule } from './core/seeds/seeds.module';
     RecipesModule,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql',
-      // debug: process.env.NODE_ENV === 'development',
-      // playground: process.env.NODE_ENV === 'development',
+      debug: process.env.NODE_ENV === 'development',
+      playground: process.env.NODE_ENV === 'development',
     }),
     MongooseModule.forRoot(`${process.env.MONGO_URI}/${process.env.DB_NAME}`, {
       useNewUrlParser: true,

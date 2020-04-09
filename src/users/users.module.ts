@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { userSchema } from './schemas/user.schema';
 import { verificationTokenSchema } from './schemas/verification-token.schema';
 import { IsUserExistValidator } from './_validators/user-exists.validator';
+import { UsersResolver } from './users.resolver';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { IsUserExistValidator } from './_validators/user-exists.validator';
       { name: 'VerificationToken', schema: verificationTokenSchema },
     ]),
   ],
-  providers: [UsersService, IsUserExistValidator],
+  providers: [UsersService, UsersResolver, IsUserExistValidator],
   exports: [UsersService],
 })
 export class UsersModule {}
