@@ -5,10 +5,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { MD5, SHA3 } from 'crypto-js';
 import { UserRoles } from './user-roles';
 import { User } from './model/user.model';
+import { VerificationToken } from './model/verification-token.model';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+    @InjectModel('VerificationToken')
+    private verificationTokenModel: Model<VerificationToken>,
+  ) {}
 
   async createUser(
     createUserRequest: CreateUserDto,
@@ -32,9 +37,18 @@ export class UsersService {
     return createdUser.save();
   }
 
+  async createVerificationToken(user: User): Promise<VerificationToken> {
+    const verificationToken = {
+      _userId: user._id,
+      token: this.generateConfirmationToken(user),
+    };
+
+    const createdToken = new this.verificationTokenModel(verificationToken);
+    return createdToken.save();
+  }
+
   async findOne(user: Partial<User>): Promise<User> {
     const foundUser = await this.userModel.findOne(user);
-    console.log('query', foundUser);
     return foundUser;
   }
 
@@ -46,9 +60,16 @@ export class UsersService {
     return user && this.hashPassword(user, password) === user.password;
   }
 
+  private generateConfirmationToken(user: User) {
+    return MD5(
+      `${user.email}-${new Date().valueOf()}`,
+      `${new Date().valueOf()}`,
+    ).toString();
+  }
+
   private generateResetPasswordToken(user: User): string {
     const timestamp = new Date().valueOf();
-    const token = `${timestamp}|${this.generateSaltForUser(user)}`;
+    const token = `${timestamp}|${user.salt}`;
 
     return Buffer.from(token).toString('base64');
   }

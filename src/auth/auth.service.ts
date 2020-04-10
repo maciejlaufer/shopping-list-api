@@ -5,7 +5,7 @@ import { User } from 'src/users/model/user.model';
 import { LoginResponse } from './_responses/login.response';
 import { RegisterRequest } from './_requests/register.request';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { validate } from 'class-validator';
+import { VerificationToken } from 'src/users/model/verification-token.model';
 
 @Injectable()
 export class AuthService {
@@ -46,8 +46,23 @@ export class AuthService {
       ...registerRequest,
     } as CreateUserDto;
 
-    console.log('req', newUser);
-    await this.usersService.createUser(newUser, ['USER']);
-    // TODO: set token for verification
+    const user = await this.usersService.createUser(newUser, ['USER']);
+
+    if (user) {
+      const verificationToken = await this.usersService.createVerificationToken(
+        user,
+      );
+
+      if (verificationToken) {
+        this.sendVerificationEmail(user, verificationToken);
+      }
+    }
+  }
+
+  private async sendVerificationEmail(
+    user: User,
+    verificationToken: VerificationToken,
+  ): Promise<void> {
+    //
   }
 }
